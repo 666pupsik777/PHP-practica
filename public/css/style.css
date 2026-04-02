@@ -123,3 +123,22 @@ button:hover {
     padding: 12px;
     border-bottom: 1px solid #eee;
 }
+
+/* Стили специально для страницы appointment */
+.appointment-form-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 30px;
+    background: #fff;
+    border: 2px solid #27ae60;
+    border-radius: 15px;
+}
+
+.appointment-form-container select,
+.appointment-form-container input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
