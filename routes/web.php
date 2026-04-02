@@ -7,8 +7,7 @@ Route::add('GET', '/hello', [Controller\Site::class, 'hello'])
 Route::add(['GET', 'POST'], '/signup', [Controller\Site::class, 'signup']);
 Route::add(['GET', 'POST'], '/login', [Controller\Site::class, 'login']);
 Route::add('GET', '/logout', [Controller\Site::class, 'logout']);
-
-// Добавьте это в routes/web.php
 Route::add('GET', '/', [Controller\Site::class, 'index']);
 Route::add('GET', '/doctors', [Controller\Site::class, 'doctors']);
 Route::add(['GET', 'POST'], '/appointment', [Controller\Site::class, 'appointment']);
+Route::add('GET', '/profile', [Controller\Site::class, 'profile'])->middleware('auth');

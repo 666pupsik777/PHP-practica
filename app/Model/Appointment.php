@@ -13,8 +13,14 @@ class Appointment extends Model
     protected $fillable = [
         'appointment_datetime',
         'patient_id',
-        'doctor_id',   // Проверь, что в БД колонка называется именно так
+        'doctor_id',
         'status_id',
         'user_id'
     ];
+
+    // Описываем связь с моделью Doctor
+    public function doctor()
+    {
+        return $this->belongsTo(Doctor::class, 'doctor_id', 'doctor_id');
+    }
 }

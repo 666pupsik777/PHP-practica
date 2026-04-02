@@ -79,4 +79,20 @@ class Site
         Auth::logout();
         app()->route->redirect('/hello');
     }
+
+    public function profile(): string
+    {
+        $user = app()->auth::user();
+
+        // Загружаем записи ТЕКУЩЕГО пользователя вместе с данными их врачей
+        $appointments = \Model\Appointment::where('user_id', $user->id)
+            ->with('doctor')
+            ->get();
+
+        return (new View())->render('site.profile', [
+            'user' => $user,
+            'appointments' => $appointments
+        ]);
+    }
+
 }

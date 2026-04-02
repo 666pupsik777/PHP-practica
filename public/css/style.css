@@ -142,3 +142,57 @@ button:hover {
     border-radius: 5px;
     border: 1px solid #ccc;
 }
+/* Общие стили для навигации */
+nav a {
+    text-decoration: none;
+    color: #2c3e50; /* Стандартный темный цвет для всех ссылок */
+    margin-left: 25px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+/* Эффект при наведении — для всех ссылок, включая профиль */
+nav a:hover {
+    color: #27ae60;
+}
+
+/* Стили для контейнера профиля (внутри страницы) */
+.profile-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.user-card {
+    background: #fdfdfd;
+    border-left: 5px solid #27ae60;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.med-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.med-table th {
+    background-color: #27ae60;
+    color: white;
+    padding: 12px;
+    text-align: left;
+}
+
+.med-table td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.status-badge {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
