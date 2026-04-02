@@ -1,21 +1,17 @@
-<h2>Регистрация пациента</h2>
 
-<?php if (isset($message)): ?>
-    <div class="message"><?= $message ?></div>
-<?php endif; ?>
-
+<h2>Регистрация в системе "Здоровье"</h2>
 <form method="post">
     <div class="form-group">
-        <label>ФИО</label>
-        <input type="text" name="name" placeholder="Введите полное имя" required>
+        <label>Ваше ФИО</label>
+        <input type="text" name="name" required>
     </div>
     <div class="form-group">
         <label>Логин</label>
-        <input type="text" name="login" placeholder="Придумайте логин" required>
+        <input type="text" name="login" required>
     </div>
     <div class="form-group">
         <label>Пароль</label>
-        <input type="password" name="password" placeholder="Введите пароль" required>
+        <input type="password" name="password" required>
     </div>
-    <button type="submit">Создать аккаунт</button>
+    <button type="submit">Зарегистрироваться как пациент</button>
 </form>
