@@ -112,4 +112,20 @@ class Site
         app()->route->redirect('/profile');
     }
 
+    public function admin_create_user(Request $request): string
+    {
+        if (app()->auth::user()->role !== 'registrar') {
+            app()->route->redirect('/hello?message=Доступ запрещен');
+        }
+
+        if ($request->method === 'POST') {
+            // Создаем пользователя из данных формы
+            if (\Model\User::create($request->all())) {
+                return app()->route->redirect('/profile?message=Пользователь успешно добавлен');
+            }
+        }
+
+        return (new View())->render('site.admin_create_user');
+    }
+
 }
