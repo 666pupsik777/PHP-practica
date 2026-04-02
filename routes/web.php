@@ -11,3 +11,4 @@ Route::add('GET', '/', [Controller\Site::class, 'index']);
 Route::add('GET', '/doctors', [Controller\Site::class, 'doctors']);
 Route::add(['GET', 'POST'], '/appointment', [Controller\Site::class, 'appointment']);
 Route::add('GET', '/profile', [Controller\Site::class, 'profile'])->middleware('auth');
+Route::add('POST', '/cancel-appointment', [Controller\Site::class, 'cancel_appointment'])->middleware('auth');

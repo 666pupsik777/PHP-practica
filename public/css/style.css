@@ -124,7 +124,6 @@ button:hover {
     border-bottom: 1px solid #eee;
 }
 
-/* Стили специально для страницы appointment */
 .appointment-form-container {
     max-width: 500px;
     margin: 0 auto;
@@ -142,21 +141,19 @@ button:hover {
     border-radius: 5px;
     border: 1px solid #ccc;
 }
-/* Общие стили для навигации */
+
 nav a {
     text-decoration: none;
-    color: #2c3e50; /* Стандартный темный цвет для всех ссылок */
+    color: #2c3e50;
     margin-left: 25px;
     font-weight: 500;
     transition: 0.3s;
 }
 
-/* Эффект при наведении — для всех ссылок, включая профиль */
 nav a:hover {
     color: #27ae60;
 }
 
-/* Стили для контейнера профиля (внутри страницы) */
 .profile-container {
     max-width: 800px;
     margin: 0 auto;
@@ -195,4 +192,24 @@ nav a:hover {
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 0.9em;
+}
+
+.btn-cancel {
+    background: none;
+    border: 1px solid #e74c3c;
+    color: #e74c3c;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-cancel:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+.med-table form {
+    display: inline-block;
 }

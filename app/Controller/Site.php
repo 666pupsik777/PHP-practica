@@ -95,4 +95,21 @@ class Site
         ]);
     }
 
+    // Добавь в класс Site
+    public function cancel_appointment(Request $request): void
+    {
+        // Проверяем, пришел ли ID записи
+        if ($request->method === 'POST' && $request->appointment_id) {
+            $appointment = \Model\Appointment::where('appointment_id', $request->appointment_id)
+                ->where('user_id', app()->auth::user()->id) // Защита: отменить можно только свою запись
+                ->first();
+
+            if ($appointment) {
+                $appointment->update(['status_id' => 3]); // Ставим ID статуса "Отменено"
+            }
+        }
+        // Возвращаемся обратно в профиль
+        app()->route->redirect('/profile');
+    }
+
 }
