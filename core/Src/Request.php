@@ -42,6 +42,6 @@ class Request
         if (array_key_exists($key, $this->body)) {
             return $this->body[$key];
         }
-        throw new Error('Accessing a non-existent property');
+//        throw new Error('Accessing a non-existent property');
     }
 }
