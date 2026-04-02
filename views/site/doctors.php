@@ -1,9 +1,12 @@
 <?php
-// views/site/doctors.php
 ?>
 <h2>Список наших специалистов</h2>
-<ul>
+
     <?php foreach ($doctors as $doctor): ?>
-        <li><?= $doctor->name ?></li>
+        <p><strong>ФИО:</strong>
+            <?= $doctor->lastname ?>
+            <?= $doctor->firstname ?>
+            <?= $doctor->patronymic ?>
+        </p>
+        <p><strong>Специализация:</strong> <?= $doctor->specialization ?></p>
     <?php endforeach; ?>
-</ul>

@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Doctor extends Model
 {
     protected $table = 'doctor';
-    public $timestamps = false; // так как в твоей БД нет полей created_at/updated_at
+    protected $primaryKey = 'doctor_id'; // Это очень важно для Eloquent!
+    public $timestamps = false;
 }
