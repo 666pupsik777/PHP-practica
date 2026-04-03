@@ -44,6 +44,7 @@ class Site
             $data['patient_id'] = $currentUserId;
             $data['status_id'] = 1; // Убедись, что в табл. status есть ID 1
 
+//            die('qweqwe');
             // 3. Пытаемся создать запись
             if (Appointment::create($data)) {
                 return app()->route->redirect('/hello?message=Запись успешно создана');

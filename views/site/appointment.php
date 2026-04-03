@@ -18,6 +18,7 @@
             <input type="datetime-local" name="appointment_datetime" required>
         </div>
 
+
         <button type="submit" class="btn">Подтвердить запись</button>
     </form>
 </div>

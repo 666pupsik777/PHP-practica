@@ -11,11 +11,11 @@ class Appointment extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'appointment_datetime',
-        'patient_id',
         'doctor_id',
+        'appointment_datetime',
+        'user_id',
+        'patient_id',
         'status_id',
-        'user_id'
     ];
 
     // Описываем связь с моделью Doctor
