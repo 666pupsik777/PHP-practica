@@ -23,6 +23,12 @@ class User extends Model implements IdentityInterface
     {
         static::creating(function ($user) {
             $user->password = md5($user->password);
+
+            // Если роль передана из формы (как у админа), оставляем её.
+            // Если роли нет (обычная регистрация), ставим 2 (пациент).
+            if (empty($user->role_id)) {
+                $user->role_id = 2;
+            }
         });
     }
 

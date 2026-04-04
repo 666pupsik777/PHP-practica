@@ -19,14 +19,13 @@
         </div>
 
         <div class="form-group">
-            <label>Назначить роль:</label>
-            <select name="role" required>
+            <label>Роль в системе:</label>
+            <select name="role_id">
+                <option value="2">Пациент</option>
+                <option value="1">Администратор</option>
                 <option value="3">Сотрудник регистратуры</option>
-                <option value="1">Системный администратор</option>
-                <option value="2">Пациент (тестовый)</option>
             </select>
         </div>
-
         <button type="submit" class="btn">Зарегистрировать в системе</button>
     </form>
 </div>

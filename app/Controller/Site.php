@@ -69,20 +69,17 @@ class Site
 
     public function admin_create_user(Request $request): string
     {
-        // Проверка прав: только администратор (role_id = 1)
-        if (Auth::user()->role_id !== 1) {
-            app()->route->redirect('/hello?message=Доступ запрещен для вашей роли');
+        // Разрешаем доступ только Администратору (role_id = 1)
+        if (app()->auth::user()->role_id !== 1) {
+            app()->route->redirect('/hello?message=Доступ запрещен');
         }
 
         if ($request->method === 'POST') {
-            $data = $request->all();
-            // В форме поле называется 'role', переводим его в 'role_id' для БД
-            $data['role_id'] = $data['role'];
-
-            if (User::create($data)) {
-                app()->route->redirect('/hello?message=Новый сотрудник успешно добавлен');
+            if (\Model\User::create($request->all())) {
+                app()->route->redirect('/profile?message=Пользователь успешно создан');
             }
         }
+
         return new View('site.admin_create_user');
     }
 
