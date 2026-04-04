@@ -21,39 +21,6 @@ class Site
         return new View('site.hello', ['message' => 'Система управления поликлиникой']);
     }
 
-    // Вывод списка врачей
-    public function doctors(): string
-    {
-        $doctors = Doctor::all();
-        return (new View())->render('site.doctors', ['doctors' => $doctors]);
-    }
-
-    // Запись на прием
-    public function appointment(Request $request): string
-    {
-        $doctors = Doctor::all();
-
-        if ($request->method === 'POST') {
-            $data = $request->all();
-
-            // 1. Берем ID текущего пользователя
-            $currentUserId = app()->auth::user()->id;
-
-            // 2. Наполняем массив данными, которые требует БД
-            $data['user_id'] = $currentUserId;
-            $data['patient_id'] = $currentUserId;
-            $data['status_id'] = 1; // Убедись, что в табл. status есть ID 1
-
-//            die('qweqwe');
-            // 3. Пытаемся создать запись
-            if (Appointment::create($data)) {
-                return app()->route->redirect('/hello?message=Запись успешно создана');
-            }
-        }
-
-        return (new View())->render('site.appointment', ['doctors' => $doctors]);
-    }
-
     public function signup(Request $request): string
     {
         if ($request->method === 'POST') {
@@ -66,13 +33,18 @@ class Site
 
     public function login(Request $request): string
     {
-        if ($request->method === 'GET') {
-            return new View('site.login');
+        if (Auth::check()) {
+            app()->route->redirect('/profile');
         }
-        if (Auth::attempt($request->all())) {
-            app()->route->redirect('/hello');
+
+        if ($request->method === 'POST') {
+            if (Auth::attempt($request->all())) {
+                app()->route->redirect('/profile');
+            } else {
+                return new View('site.login', ['message' => 'Неправильный логин или пароль']);
+            }
         }
-        return new View('site.login', ['message' => 'Неправильные логин или пароль']);
+        return new View('site.login');
     }
 
     public function logout(): void
@@ -83,10 +55,9 @@ class Site
 
     public function profile(): string
     {
-        $user = app()->auth::user();
-
-        // Загружаем записи ТЕКУЩЕГО пользователя вместе с данными их врачей
-        $appointments = \Model\Appointment::where('user_id', $user->id)
+        $user = Auth::user();
+        // Получаем записи текущего пользователя с врачами
+        $appointments = Appointment::where('user_id', $user->user_id)
             ->with('doctor')
             ->get();
 
@@ -96,37 +67,80 @@ class Site
         ]);
     }
 
-    // Добавь в класс Site
-    public function cancel_appointment(Request $request): void
-    {
-        // Проверяем, пришел ли ID записи
-        if ($request->method === 'POST' && $request->appointment_id) {
-            $appointment = \Model\Appointment::where('appointment_id', $request->appointment_id)
-                ->where('user_id', app()->auth::user()->id) // Защита: отменить можно только свою запись
-                ->first();
-
-            if ($appointment) {
-                $appointment->update(['status_id' => 3]); // Ставим ID статуса "Отменено"
-            }
-        }
-        // Возвращаемся обратно в профиль
-        app()->route->redirect('/profile');
-    }
-
     public function admin_create_user(Request $request): string
     {
-        if (app()->auth::user()->role !== 'registrar') {
-            app()->route->redirect('/hello?message=Доступ запрещен');
+        // Проверка прав: только администратор (role_id = 1)
+        if (Auth::user()->role_id !== 1) {
+            app()->route->redirect('/hello?message=Доступ запрещен для вашей роли');
         }
 
         if ($request->method === 'POST') {
-            // Создаем пользователя из данных формы
-            if (\Model\User::create($request->all())) {
-                return app()->route->redirect('/profile?message=Пользователь успешно добавлен');
+            $data = $request->all();
+            // В форме поле называется 'role', переводим его в 'role_id' для БД
+            $data['role_id'] = $data['role'];
+
+            if (User::create($data)) {
+                app()->route->redirect('/hello?message=Новый сотрудник успешно добавлен');
+            }
+        }
+        return new View('site.admin_create_user');
+    }
+
+    public function doctors(): string
+    {
+        $doctors = Doctor::all();
+        return (new View())->render('site.doctors', ['doctors' => $doctors]);
+    }
+
+    public function appointment(Request $request): string
+    {
+        $doctors = \Model\Doctor::all();
+
+        if ($request->method === 'POST') {
+            $data = $request->all();
+            $user = app()->auth::user();
+
+            // 1. Ищем пациента в таблице patient по его user_id
+            $patient = \Model\Patient::where('user_id', $user->user_id)->first();
+
+            // 2. Если записи о пациенте еще нет — создаем её
+            if (!$patient) {
+                $patient = \Model\Patient::create([
+                    'lastname' => $user->name, // Берем ФИО из таблицы users
+                    'firstname' => 'Имя',      // Заглушка (можно будет изменить в профиле)
+                    'patronymic' => 'Отчество', // Заглушка
+                    'user_id' => $user->user_id // Привязываем к текущему аккаунту
+                ]);
+            }
+
+            // 3. Подготавливаем данные для таблицы записей (appointment)
+            $appointmentData = [
+                'doctor_id' => $data['doctor_id'],
+                'appointment_datetime' => $data['appointment_datetime'],
+                'user_id' => $user->user_id,
+                'patient_id' => $patient->patient_id,
+                'status_id' => 1 // Статус "Новая"
+            ];
+
+            if (\Model\Appointment::create($appointmentData)) {
+                app()->route->redirect('/profile?message=Вы успешно записаны к врачу!');
             }
         }
 
-        return (new View())->render('site.admin_create_user');
+        return new View('site.appointment', ['doctors' => $doctors]);
     }
 
+    public function cancel_appointment(Request $request): void
+    {
+        if ($request->method === 'POST' && $request->appointment_id) {
+            $appointment = Appointment::where('appointment_id', $request->appointment_id)
+                ->where('user_id', Auth::user()->user_id)
+                ->first();
+
+            if ($appointment) {
+                $appointment->update(['status_id' => 3]); // Статус "Отменено"
+            }
+        }
+        app()->route->redirect('/profile');
+    }
 }

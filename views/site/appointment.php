@@ -7,7 +7,7 @@
                 <option value="">-- Выберите врача --</option>
                 <?php foreach ($doctors as $doctor): ?>
                     <option value="<?= $doctor->doctor_id ?>">
-                        <?= $doctor->lastname ?> <?= $doctor->firstname ?>
+                        <?= htmlspecialchars($doctor->lastname) ?> <?= htmlspecialchars($doctor->firstname) ?>
                     </option>
                 <?php endforeach; ?>
             </select>
@@ -17,7 +17,6 @@
             <label>Дата и время:</label>
             <input type="datetime-local" name="appointment_datetime" required>
         </div>
-
 
         <button type="submit" class="btn">Подтвердить запись</button>
     </form>
