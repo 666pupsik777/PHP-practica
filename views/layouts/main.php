@@ -12,7 +12,7 @@
     <div class="logo">Поликлиника</div>
     <nav>
         <a href="<?= app()->route->getUrl('/hello') ?>">Главная</a>
-        <a href="<?= app()->route->getUrl('/doctors') ?>">Врачи</a>
+        <a href="<?= app()->route->getUrl('/doctors') ?>">Наши врачи</a>
 
         <?php if (!app()->auth::check()): ?>
             <a href="<?= app()->route->getUrl('/login') ?>">Вход</a>
@@ -21,11 +21,15 @@
             <a href="<?= app()->route->getUrl('/appointment') ?>">Записаться</a>
             <a href="<?= app()->route->getUrl('/profile') ?>">Профиль</a>
 
-            <?php if (app()->auth::user()->role_id === 1): ?>
-                <a href="<?= app()->route->getUrl('/admin/create-user') ?>"
-                   style="color: #d35400; font-weight: bold;">
-                    + Добавить сотрудника
+            <?php if (app()->auth::user()->role_id === 3): ?>
+                <a href="<?= app()->route->getUrl('/registrar/dashboard') ?>"
+                   style="color: #27ae60; font-weight: bold;">
+                    Панель управления
                 </a>
+            <?php endif; ?>
+
+            <?php if (app()->auth::user()->role_id === 1): ?>
+                <a href="<?= app()->route->getUrl('/registrar/dashboard') ?>">Админ-панель</a>
             <?php endif; ?>
 
             <a href="<?= app()->route->getUrl('/logout') ?>">Выход (<?= app()->auth::user()->name ?>)</a>
