@@ -22,3 +22,17 @@ Route::add('GET', '/registrar/dashboard', [Controller\Site::class, 'registrar_da
 Route::add('GET', '/registrar/appointments', [Controller\Site::class, 'all_appointments'])->middleware('auth');
 Route::add('GET', '/registrar/patients-by-doctor', [Controller\Site::class, 'patients_by_doctor'])->middleware('auth');
 Route::add('GET', '/registrar/doctors-by-patient', [Controller\Site::class, 'doctors_by_patient'])->middleware('auth');
+
+// Регистратор: создание и запись
+Route::add(['GET', 'POST'], '/registrar/create-patient', [Controller\Site::class, 'create_patient'])->middleware('auth');
+Route::add(['GET', 'POST'], '/registrar/create-doctor', [Controller\Site::class, 'create_doctor'])->middleware('auth');
+Route::add(['GET', 'POST'], '/registrar/new-appointment', [Controller\Site::class, 'registrar_appointment'])->middleware('auth');
+
+
+
+
+
+
+
+
+
