@@ -18,14 +18,14 @@ class Appointment extends Model
         'status_id',
     ];
 
-    // Связь с доктором (уже должна быть)
+    // Связь с доктором
     public function doctor()
     {
+        // Указываем внешний ключ doctor_id и локальный ключ doctor_id
         return $this->belongsTo(Doctor::class, 'doctor_id', 'doctor_id');
     }
 
-    // ДОБАВЬ ЭТО: Связь с пациентом
-    // Без этого метода $query->with(['patient']) в контроллере не сработает
+    // Связь с пациентом
     public function patient()
     {
         return $this->belongsTo(Patient::class, 'patient_id', 'patient_id');

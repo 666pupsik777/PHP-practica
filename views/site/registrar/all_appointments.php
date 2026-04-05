@@ -24,7 +24,6 @@
             <table class="styled-table">
                 <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Дата и время</th>
                     <th>Пациент</th>
                     <th>Врач</th>
@@ -32,65 +31,49 @@
                 </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($appointments as $app): ?>
+                <?php foreach ($appointments as $appointment): ?>
                     <tr>
-                        <td><?= $app->appointment_id ?></td>
-                        <td><?= date('d.m.Y H:i', strtotime($app->appointment_datetime)) ?></td>
+                        <td><?= date('d.m.Y H:i', strtotime($appointment->appointment_datetime)) ?></td>
+
                         <td>
-                            <strong><?= htmlspecialchars($app->patient->lastname ?? 'Не указан') ?></strong><br>
-                            <small><?= htmlspecialchars($app->patient->firstname ?? '') ?></small>
-                        </td>
-                        <td><?= htmlspecialchars($app->doctor->name ?? 'Врач удален') ?></td>
-                        <td>
-                            <?php if ($app->status_id == 1): ?>
-                                <span class="status-new">Новая</span>
-                            <?php elseif ($app->status_id == 3): ?>
-                                <span class="status-cancelled">Отменена</span>
+                            <?php if ($appointment->patient): ?>
+                                <?= htmlspecialchars($appointment->patient->lastname . ' ' . $appointment->patient->firstname) ?>
                             <?php else: ?>
-                                <span class="status-default">Подтверждена</span>
+                                <span style="color: #999;">Не указан</span>
                             <?php endif; ?>
+                        </td>
+
+                        <td>
+                            <?= $appointment->doctor->lastname ?? '—' ?>
+                        </td>
+
+                        <td>
+                            <?php
+                            $statusNames = [1 => 'Новая', 2 => 'Выполнена', 3 => 'Отменена'];
+                            echo $statusNames[$appointment->status_id] ?? 'Неизвестно';
+                            ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
             </table>
         <?php else: ?>
-            <div class="empty-state">
-                <p>Записей не найдено.</p>
-            </div>
+            <p style="padding: 20px; text-align: center;">Записей не найдено.</p>
         <?php endif; ?>
-    </div>
-
-    <div class="back-link">
-        <a href="<?= app()->route->getUrl('/registrar/dashboard') ?>">← Вернуться в панель</a>
     </div>
 </div>
 
 <style>
-    .appointments-container { max-width: 1100px; margin: 20px auto; padding: 20px; font-family: sans-serif; }
     .page-title { color: #2c3e50; border-bottom: 2px solid #27ae60; padding-bottom: 10px; margin-bottom: 20px; }
-
-    /* Стили фильтра */
     .filter-section { background: #f4f7f6; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
     .filter-form { display: flex; align-items: flex-end; gap: 15px; }
     .form-group { display: flex; flex-direction: column; gap: 5px; }
     .form-group select { padding: 8px; border-radius: 4px; border: 1px solid #ccc; min-width: 200px; }
-
     .btn-filter { background: #27ae60; color: white; border: none; padding: 9px 15px; border-radius: 4px; cursor: pointer; }
     .btn-reset { background: #95a5a6; color: white; text-decoration: none; padding: 9px 15px; border-radius: 4px; font-size: 14px; }
-
-    /* Таблица */
     .table-wrapper { background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
-    .styled-table { width: 100%; border-collapse: collapse; text-align: left; }
-    .styled-table th { background-color: #27ae60; color: white; padding: 12px 15px; }
-    .styled-table td { padding: 12px 15px; border-bottom: 1px solid #eee; }
-    .styled-table tbody tr:hover { background-color: #f1f1f1; }
-
-    /* Статусы */
-    .status-new { color: #2980b9; font-weight: bold; }
-    .status-cancelled { color: #e74c3c; font-weight: bold; }
-    .status-default { color: #27ae60; }
-
-    .back-link { margin-top: 20px; }
-    .back-link a { color: #34495e; text-decoration: none; font-weight: bold; }
+    .styled-table { width: 100%; border-collapse: collapse; }
+    .styled-table th { background: #27ae60; color: white; padding: 12px; text-align: left; }
+    .styled-table td { padding: 12px; border-bottom: 1px solid #eee; }
+    .styled-table tr:hover { background: #f9f9f9; }
 </style>
