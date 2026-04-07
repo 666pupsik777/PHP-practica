@@ -2,32 +2,25 @@
     <h2>Записать пациента на прием</h2>
     <form method="post">
         <div class="form-group">
-            <label>Выберите пациента:</label>
+            <label>Пациент:</label>
             <select name="patient_id" required>
                 <?php foreach ($patients as $p): ?>
-                    <option value="<?= $p->patient_id ?>">
-                        <?= htmlspecialchars($p->lastname . ' ' . $p->firstname . ' ' . $p->patronymic) ?>
-                    </option>
+                    <option value="<?= $p->patient_id ?>"><?= $p->lastname ?> <?= $p->firstname ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
-
         <div class="form-group">
-            <label>Выберите врача:</label>
+            <label>Врач:</label>
             <select name="doctor_id" required>
                 <?php foreach ($doctors as $d): ?>
-                    <option value="<?= $d->doctor_id ?>">
-                        <?= htmlspecialchars($d->lastname . ' ' . $d->firstname) ?> (<?= $d->specialization ?>)
-                    </option>
+                    <option value="<?= $d->doctor_id ?>"><?= $d->lastname ?> (<?= $d->specialization ?>)</option>
                 <?php endforeach; ?>
             </select>
         </div>
-
         <div class="form-group">
-            <label>Дата и время приема:</label>
+            <label>Дата и время:</label>
             <input type="datetime-local" name="appointment_datetime" required>
         </div>
-
-        <button type="submit" class="btn">Записать</button>
+        <button type="submit" class="btn">Создать запись</button>
     </form>
 </div>
