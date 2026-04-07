@@ -1,5 +1,5 @@
 <div class="form-container">
-    <h2>Добавление нового врача</h2>
+    <h2>Регистрация нового врача</h2>
     <form method="post">
         <div class="form-group">
             <label>Фамилия:</label>
@@ -13,10 +13,28 @@
             <label>Отчество:</label>
             <input type="text" name="patronymic">
         </div>
+
         <div class="form-group">
             <label>Специализация:</label>
-            <input type="text" name="specialization" required placeholder="Например: Терапевт">
+            <input type="text" name="specialization" placeholder="Например: Терапевт" required>
         </div>
-        <button type="submit" class="btn">Внести в базу</button>
+
+        <input type="hidden" name="position_id" value="1">
+
+        <button type="submit" class="btn">Добавить врача</button>
     </form>
 </div>
+
+<style>
+    .form-group label {
+        display: block;
+        font-weight: bold;
+    }
+
+    .form-group input {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+</style>

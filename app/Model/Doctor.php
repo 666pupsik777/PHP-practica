@@ -6,15 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Doctor extends Model
 {
-    public $timestamps = false;
     protected $table = 'doctor';
     protected $primaryKey = 'doctor_id';
+    public $timestamps = false;
 
-    // ЭТОГО НЕ ХВАТАЛО: разрешаем запись полей
+    // Проверь, чтобы эти поля были тут:
     protected $fillable = [
         'lastname',
         'firstname',
         'patronymic',
-        'specialization'
+        'specialization',
+        'position_id' // ОБЯЗАТЕЛЬНО ДОБАВЬ ЭТО
     ];
 }

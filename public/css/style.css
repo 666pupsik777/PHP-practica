@@ -16,12 +16,26 @@ header {
     border-bottom: 4px solid #27ae60;
 }
 
+/* Ищем старый блок header .logo и меняем его так */
 header .logo {
     font-size: 24px;
     font-weight: bold;
-    color: #27ae60;
     text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+/* А этот блок вставь сразу после него */
+.logo-link,
+header .logo a.logo-link {
+    text-decoration: none !important; /* Принудительно убираем линию */
+    color: #27ae60 !important;        /* Принудительно ставим зеленый */
+    border: none !important;          /* На случай, если есть нижняя граница */
+    outline: none;
+}
+
+.logo-link:hover {
+    color: #219150 !important;        /* Цвет при наведении чуть темнее */
+    text-decoration: none !important;
 }
 
 nav a {

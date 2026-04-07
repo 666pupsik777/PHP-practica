@@ -18,21 +18,25 @@
             <a href="<?= app()->route->getUrl('/login') ?>">Вход</a>
             <a href="<?= app()->route->getUrl('/signup') ?>">Регистрация</a>
         <?php else: ?>
-            <a href="<?= app()->route->getUrl('/appointment') ?>">Записаться</a>
-            <a href="<?= app()->route->getUrl('/profile') ?>">Профиль</a>
+
+            <?php if (app()->auth::user()->role_id === 2): ?>
+                <a href="<?= app()->route->getUrl('/appointment') ?>">Записаться</a>
+                <a href="<?= app()->route->getUrl('/profile') ?>">Профиль</a>
+            <?php endif; ?>
+
+            <?php if (app()->auth::user()->role_id === 1): ?>
+                <a href="<?= app()->route->getUrl('/admin/create-user') ?>">
+                    Добавить сотрудника
+                </a>
+            <?php endif; ?>
 
             <?php if (app()->auth::user()->role_id === 3): ?>
-                <a href="<?= app()->route->getUrl('/registrar/dashboard') ?>"
-                   style="color: #27ae60; font-weight: bold;">
+                <a href="<?= app()->route->getUrl('/registrar/dashboard') ?>"">
                     Панель управления
                 </a>
             <?php endif; ?>
 
-            <?php if (app()->auth::user()->role_id === 1): ?>
-                <a href="<?= app()->route->getUrl('/registrar/dashboard') ?>">Админ-панель</a>
-            <?php endif; ?>
-
-            <a href="<?= app()->route->getUrl('/logout') ?>">Выход (<?= app()->auth::user()->name ?>)</a>
+            <a href="<?= app()->route->getUrl('/logout') ?>">Выход <?= app()->auth::user()->name ?></a>
         <?php endif; ?>
     </nav>
 </header>

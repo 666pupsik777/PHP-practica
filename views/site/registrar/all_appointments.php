@@ -49,7 +49,7 @@
 
                         <td>
                             <?php
-                            $statusNames = [1 => 'Новая', 2 => 'Выполнена', 3 => 'Отменена'];
+                            $statusNames = [1 => 'Активна', 2 => 'Выполнена', 3 => 'Отменена'];
                             echo $statusNames[$appointment->status_id] ?? 'Неизвестно';
                             ?>
                         </td>

@@ -13,15 +13,12 @@
             <label>Отчество:</label>
             <input type="text" name="patronymic">
         </div>
-        <hr>
+
         <div class="form-group">
-            <label>Логин для входа (ЛК):</label>
-            <input type="text" name="login" required>
+            <label>Дата рождения:</label>
+            <input type="date" name="birth_date" required>
         </div>
-        <div class="form-group">
-            <label>Пароль:</label>
-            <input type="password" name="password" required>
-        </div>
+
         <button type="submit" class="btn">Добавить пациента</button>
     </form>
 </div>
