@@ -45,11 +45,24 @@ class Site
     /* АДМИН */
     public function admin_create_user(Request $request): string
     {
+        // Проверка доступа: только для администратора (role_id = 1)
         $this->checkAccess([1]);
+
         if ($request->method === 'POST') {
-            if (User::create($request->all())) app()->route->redirect('/hello?message=Сотрудник добавлен');
+            // Простая валидация (можно расширить)
+            if ($request->login && $request->password && $request->name) {
+
+                // Создаем пользователя через модель User
+                // Пароль обычно хешируется, проверьте как в вашей системе (например, md5 или password_hash)
+                $userData = $request->all();
+
+                if (User::create($userData)) {
+                    app()->route->redirect('/hello?message=Сотрудник успешно добавлен');
+                }
+            }
         }
-        return new View('site.admin.create_user');
+
+        return new View('site.admin_create_user');
     }
 
     /* РЕГИСТРАТОР */

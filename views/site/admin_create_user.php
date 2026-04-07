@@ -21,7 +21,6 @@
         <div class="form-group">
             <label>Роль в системе:</label>
             <select name="role_id">
-                <option value="2">Пациент</option>
                 <option value="1">Администратор</option>
                 <option value="3">Сотрудник регистратуры</option>
             </select>
