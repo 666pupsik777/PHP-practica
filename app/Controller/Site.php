@@ -163,10 +163,34 @@ class Site
     }
     public function all_appointments(Request $request): string
     {
-        $this->checkAccess([3]);
-        $query = Appointment::with(['patient', 'doctor']);
-        if ($request->patient_id) $query->where('patient_id', $request->patient_id);
-        return new View('site.registrar.all_appointments', ['appointments' => $query->get(), 'patients' => Patient::all()]);
+        $this->checkAccess([3]); // Доступ только для регистратора
+
+        $query = \Model\Appointment::query();
+
+        // 1. Фильтр по пациенту
+        if ($request->patient_id) {
+            $query->where('patient_id', $request->patient_id);
+        }
+
+        // 2. Фильтр по врачу
+        if ($request->doctor_id) {
+            $query->where('doctor_id', $request->doctor_id);
+        }
+
+        // 3. Фильтр по дате (хитрая магия для поля datetime)
+        if ($request->date) {
+            $query->whereRaw('DATE(appointment_datetime) = ?', [$request->date]);
+        }
+
+        // Загружаем данные вместе со связями (врачи и пациенты)
+        $appointments = $query->with(['patient', 'doctor'])->get();
+
+        return new View('site.registrar.all_appointments', [
+            'appointments' => $appointments,
+            'patients' => \Model\Patient::all(),
+            'doctors' => \Model\Doctor::all(),
+            'request' => $request // Передаем сам запрос обратно для меток в форме
+        ]);
     }
 
     public function cancel_appointment(Request $request): void
