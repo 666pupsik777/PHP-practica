@@ -43,65 +43,124 @@ class Site
     public function logout(): void { Auth::logout(); app()->route->redirect('/hello'); }
 
     /* АДМИН */
-    public function admin_create_user(Request $request): string
+    // Регистрация обычного пациента (самостоятельная)
+    public function signup(Request $request): string
     {
-        // Проверка доступа: только для администратора (role_id = 1)
-        $this->checkAccess([1]);
-
         if ($request->method === 'POST') {
-            // Простая валидация (можно расширить)
-            if ($request->login && $request->password && $request->name) {
-
-                // Создаем пользователя через модель User
-                // Пароль обычно хешируется, проверьте как в вашей системе (например, md5 или password_hash)
-                $userData = $request->all();
-
-                if (User::create($userData)) {
-                    app()->route->redirect('/hello?message=Сотрудник успешно добавлен');
-                }
+            if (User::create($request->all())) {
+                app()->route->redirect('/login?message=Регистрация успешна');
             }
         }
-
+        return new View('site.signup');
+    }
+// Регистрация сотрудника АДМИНИСТРАТОРОМ
+    public function admin_create_user(Request $request): string
+    {
+        $this->checkAccess([1]); // Проверка на админа
+        if ($request->method === 'POST') {
+            if (User::create($request->all())) {
+                app()->route->redirect('/hello?message=Сотрудник успешно добавлен');
+            }
+        }
         return new View('site.admin_create_user');
     }
 
     /* РЕГИСТРАТОР */
+    public function appointment(Request $request): string
+    {
+        $this->checkAccess([2]); // Только для роли "Пациент"
+
+        if ($request->method === 'POST') {
+            $data = $request->all();
+
+            // 1. Исправляем формат даты (убираем T)
+            if (!empty($data['appointment_datetime'])) {
+                $data['appointment_datetime'] = str_replace('T', ' ', $data['appointment_datetime']);
+            }
+
+            // 2. Находим ID пациента, привязанного к текущему пользователю
+            $patient = Patient::where('user_id', Auth::user()->user_id)->first();
+
+            if (!$patient) {
+                app()->route->redirect('/hello?message=Ошибка: профиль пациента не найден');
+            }
+
+            $data['patient_id'] = $patient->patient_id;
+            $data['status_id'] = 1; // Активна
+            $data['user_id'] = Auth::user()->user_id;
+
+            if (Appointment::create($data)) {
+                app()->route->redirect('/profile?message=Вы успешно записаны');
+            }
+        }
+
+        return new View('site.appointment', ['doctors' => Doctor::all()]);
+    }
     public function registrar_dashboard(): string { $this->checkAccess([3]); return new View('site.registrar.dashboard'); }
 
+// Регистрация пациента РЕГИСТРАТОРОМ
     public function create_patient(Request $request): string
     {
         $this->checkAccess([3]);
-        if ($request->method === 'POST') {
-            if (Patient::create($request->all())) app()->route->redirect('/registrar/dashboard?message=Пациент добавлен');
-        }
-        return new View('site.registrar.create_patient');
-    }
 
+        if ($request->method === 'POST') {
+            if (Patient::create($request->all())) {
+                app()->route->redirect('/registrar/dashboard?message=Пациент успешно добавлен');
+            }
+        }
+
+        // Добавляем (string), чтобы точно вернуть строку
+        return new View('site.registrar.create_patient');    }
+
+
+    // Регистрация врача РЕГИСТРАТОРОМ
     public function create_doctor(Request $request): string
     {
-        $this->checkAccess([3]);
+        $this->checkAccess([3]); // Доступ для регистратора
+
         if ($request->method === 'POST') {
-            if (Doctor::create($request->all())) {
+            $data = $request->all();
+
+            // Устанавливаем ID должности по умолчанию (например, 1)
+            $data['position_id'] = 1;
+
+            if (Doctor::create($data)) {
                 app()->route->redirect('/registrar/dashboard?message=Врач успешно добавлен');
             }
         }
-        return new View('site.registrar.create_doctor', [
-            'positions' => Position::all(),
-            'specializations' => ['Терапевт', 'Хирург', 'Офтальмолог', 'Невролог', 'Стоматолог', 'Кардиолог']
-        ]);
+
+        return new View('site.registrar.create_doctor');
     }
 
     public function registrar_create_appointment(Request $request): string
     {
-        $this->checkAccess([3]);
+        $this->checkAccess([3]); // Только регистратор
+
         if ($request->method === 'POST') {
             $data = $request->all();
-            $data['status_id'] = 1;
-            if (Appointment::create($data)) app()->route->redirect('/registrar/appointments?message=Запись создана');
-        }
-        return new View('site.registrar.create_appointment', ['doctors' => Doctor::all(), 'patients' => Patient::all()]);
-    }
 
+            // 1. Убираем букву 'T' из даты, чтобы MySQL не ругался
+            if (!empty($data['appointment_datetime'])) {
+                $data['appointment_datetime'] = str_replace('T', ' ', $data['appointment_datetime']);
+            }
+
+            // 2. Устанавливаем статус "Активна" (обычно 1)
+            $data['status_id'] = 1;
+
+            // 3. Добавляем ID сотрудника, который создает запись (если нужно для БД)
+            $data['user_id'] = Auth::user()->user_id;
+
+            // 4. Пытаемся создать запись
+            if (Appointment::create($data)) {
+                app()->route->redirect('/registrar/appointments?message=Запись успешно создана');
+            }
+        }
+
+        return new View('site.registrar.create_appointment', [
+            'doctors' => Doctor::all(),
+            'patients' => Patient::all()
+        ]);
+    }
     public function all_appointments(Request $request): string
     {
         $this->checkAccess([3]);
@@ -128,4 +187,7 @@ class Site
     }
 
     public function doctors(): string { return new View('site.doctors', ['doctors' => Doctor::all()]); }
+
+
+
 }

@@ -22,3 +22,8 @@ Route::add(['GET', 'POST'], '/admin/create-user', [Site::class, 'admin_create_us
 // Пациент
 Route::add('GET', '/doctors', [Site::class, 'doctors']);
 Route::add('GET', '/profile', [Site::class, 'profile'])->middleware('auth');
+
+Route::add(['GET', 'POST'], '/signup', [Site::class, 'signup']);
+// Маршрут для самостоятельной записи пациента
+Route::add(['GET', 'POST'], '/appointment', [Site::class, 'appointment'])->middleware('auth');
+

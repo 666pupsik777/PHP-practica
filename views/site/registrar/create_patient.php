@@ -15,8 +15,7 @@
         </div>
         <div class="form-group">
             <label>Дата рождения:</label>
-            <input type="date" name="birth_date" required>
-        </div>
+            <input type="date" name="birth_date" required>        </div>
         <button type="submit" class="btn">Добавить пациента</button>
     </form>
 </div>

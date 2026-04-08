@@ -10,12 +10,12 @@ class Doctor extends Model
     protected $primaryKey = 'doctor_id';
     public $timestamps = false;
 
-    // Проверь, чтобы эти поля были тут:
     protected $fillable = [
         'lastname',
         'firstname',
         'patronymic',
         'specialization',
-        'position_id' // ОБЯЗАТЕЛЬНО ДОБАВЬ ЭТО
+        'position_id',
+        'birth_date' // Это поле позволит Laravel сохранять дату
     ];
 }

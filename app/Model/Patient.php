@@ -10,11 +10,11 @@ class Patient extends Model
     protected $primaryKey = 'patient_id';
     public $timestamps = false;
 
-    // Указываем только те колонки, которые есть в твоей БД
     protected $fillable = [
         'lastname',
         'firstname',
         'patronymic',
+        'birth_date',
         'user_id'
     ];
 }
