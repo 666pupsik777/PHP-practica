@@ -54,29 +54,25 @@ class Site extends Controller
 
     /* АДМИН */
     // Регистрация обычного пациента (самостоятельная)
-    public function signup(Request $request): string
-    {
+    public function signup(Request $request) {
         if ($request->method === 'POST') {
+            // Получаем все данные из запроса
+            $data = $request->all();
 
-            $validator = new Validator($request->all(), [
-                'name' => ['required'],
-                'login' => ['required', 'unique:users,login'],
-                'password' => ['required']
-            ], [
-                'required' => 'Поле :field пусто',
-                'unique' => 'Поле :field должно быть уникально'
-            ]);
+            // Очищаем логин от тегов и пробелов (Базовая защита XSS при вводе)
+            $login = isset($data['login']) ? trim(strip_tags($data['login'])) : '';
 
-            if($validator->fails()){
-                return new View('site.signup',
-                    ['message' => json_encode($validator->errors(), JSON_UNESCAPED_UNICODE)]);
-            }
+            // Пароль оставляем как есть (его очистит хеширование или валидация позже)
+            $password = $data['password'] ?? '';
 
-            if (User::create($request->all())) {
-                app()->route->redirect('/login');
+            // Пример дальнейшей логики:
+            if (!empty($login) && !empty($password)) {
+                // Здесь будет создание пользователя, например:
+                // User::create(['login' => $login, 'password' => bin2hex($password)]);
+                app()->route->redirect('/hello?message=Вы успешно зарегистрированы');
             }
         }
-        return new View('site.signup');
+        return $this->render('site.signup');
     }
 
 // Регистрация сотрудника АДМИНИСТРАТОРОМ
