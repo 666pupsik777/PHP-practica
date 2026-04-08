@@ -1,8 +1,16 @@
+<?php
+if (!function_exists('h')) {
+    function h($text) {
+        return htmlspecialchars($text ?? '', ENT_QUOTES, 'UTF-8');
+    }
+}
+?>
 <div class="form-container">
     <h2>Регистрация нового сотрудника</h2>
-    <p style="color: #666;">Текущий администратор: <?= app()->auth::user()->name ?></p>
+    <p style="color: #666;">Текущий администратор: <?= h(app()->auth::user()->name) ?></p>
 
     <form method="post">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
         <div class="form-group">
             <label>ФИО сотрудника:</label>
             <input type="text" name="name" required placeholder="Введите полное имя">

@@ -1,3 +1,10 @@
+<?php
+if (!function_exists('h')) {
+    function h($text) {
+        return htmlspecialchars($text ?? '', ENT_QUOTES, 'UTF-8');
+    }
+}
+?>
 <div class="profile-container">
     <h2>Личный кабинет пациента</h2>
     <div class="appointments-section">
@@ -14,21 +21,22 @@
             </thead>
             <tbody>
             <?php foreach ($appointments as $app):
-                $isCancelled = ($app->status_id == 3); // Проверка на статус "Отменено"
+                $isCancelled = ($app->status_id == 3);
                 ?>
                 <tr style="<?= $isCancelled ? 'opacity: 0.5;' : '' ?>">
-                    <td><?= date('d.m.Y H:i', strtotime($app->appointment_datetime)) ?></td>
-                    <td><?= $app->doctor->lastname ?? '—' ?></td>
-                    <td><?= $app->doctor->specialization ?? '—' ?></td>
+                    <td><?= h(date('d.m.Y H:i', strtotime($app->appointment_datetime))) ?></td>
+                    <td><?= h($app->doctor->lastname ?? '—') ?></td>
+                    <td><?= h($app->doctor->specialization ?? '—') ?></td>
                     <td>
-                            <span class="status-badge" style="background: <?= $isCancelled ? '#fce4ec' : '#e8f5e9' ?>; color: <?= $isCancelled ? '#c2185b' : '#2e7d32' ?>;">
-                                <?= $isCancelled ? 'Отменена' : 'Подтверждена' ?>
-                            </span>
+                        <span class="status-badge" style="background: <?= $isCancelled ? '#fce4ec' : '#e8f5e9' ?>; color: <?= $isCancelled ? '#c2185b' : '#2e7d32' ?>;">
+                            <?= $isCancelled ? 'Отменена' : 'Подтверждена' ?>
+                        </span>
                     </td>
                     <td>
                         <?php if (!$isCancelled): ?>
-                            <form method="post" action="<?= app()->route->getUrl('/cancel-appointment') ?>" style="margin:0;">
-                                <input type="hidden" name="appointment_id" value="<?= $app->appointment_id ?>">
+                            <form method="post" action="<?= h(app()->route->getUrl('/cancel-appointment')) ?>" style="margin:0;">
+                                <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? '' ?>">
+                                <input type="hidden" name="appointment_id" value="<?= h($app->appointment_id) ?>">
                                 <button type="submit" class="btn-cancel" onclick="return confirm('Вы уверены, что хотите отменить запись?')">
                                     Отменить
                                 </button>
