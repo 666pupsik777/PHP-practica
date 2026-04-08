@@ -1,14 +1,14 @@
 <h2>Вход в систему</h2>
-
 <?php if (isset($message)): ?>
     <div class="message"><?= $message ?></div>
 <?php endif; ?>
-
 <?php if (!app()->auth::check()): ?>
     <form method="post">
+        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
         <div class="form-group">
             <label>Логин</label>
-            <input type="text" name="login" value="<?= $request['login'] ?? '' ?>">        </div>
+            <input type="text" name="login" value="<?= $request['login'] ?? '' ?>">
+        </div>
         <div class="form-group">
             <label>Пароль</label>
             <input type="password" name="password" required>

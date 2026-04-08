@@ -56,20 +56,16 @@ class Site extends Controller
     // Регистрация обычного пациента (самостоятельная)
     public function signup(Request $request) {
         if ($request->method === 'POST') {
-            // Получаем все данные из запроса
+            // Берем данные через метод all(), как в других твоих функциях
             $data = $request->all();
 
-            // Очищаем логин от тегов и пробелов (Базовая защита XSS при вводе)
+            // Базовая защита от XSS: убираем теги из логина
             $login = isset($data['login']) ? trim(strip_tags($data['login'])) : '';
-
-            // Пароль оставляем как есть (его очистит хеширование или валидация позже)
             $password = $data['password'] ?? '';
 
-            // Пример дальнейшей логики:
             if (!empty($login) && !empty($password)) {
-                // Здесь будет создание пользователя, например:
-                // User::create(['login' => $login, 'password' => bin2hex($password)]);
-                app()->route->redirect('/hello?message=Вы успешно зарегистрированы');
+                // Тут логика сохранения в базу...
+                app()->route->redirect('/hello?message=Успешная регистрация');
             }
         }
         return $this->render('site.signup');
