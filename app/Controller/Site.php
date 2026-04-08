@@ -8,29 +8,38 @@ use Model\User;
 use Model\Doctor;
 use Model\Patient;
 use Model\Appointment;
-use Model\Position;
 use Src\Auth\Auth;
 use Src\Validator\Validator;
 
-class Site
+class Site extends Controller
 {
-    private function checkAccess(array $roles): void
+    protected function checkAccess(array $roles): void
     {
         if (!Auth::check() || !in_array(Auth::user()->role_id, $roles)) {
             app()->route->redirect('/hello?message=Недостаточно прав');
         }
     }
 
-    public function index(): string { return new View('site.index'); }
-    public function hello(): string { return new View('site.hello', ['message' => 'Система управления поликлиникой']); }
+    public function index(): string
+    {
+        return $this->render('site.index');
+    }
 
     public function login(Request $request): string
     {
-        if (Auth::check()) $this->redirectAfterLogin();
-        if ($request->method === 'POST') {
-            if (Auth::attempt($request->all())) $this->redirectAfterLogin();
+        if (Auth::check()) {
+            $this->redirectAfterLogin();
         }
-        return new View('site.login');
+
+        if ($request->method === 'POST') {
+            if (Auth::attempt($request->all())) {
+                $this->redirectAfterLogin();
+            }
+            // Если вход не удался, передаем всё, что ввел пользователь, обратно в форму
+            return $this->render('site.login', ['request' => $request->all()]);
+        }
+
+        return $this->render('site.login');
     }
 
     private function redirectAfterLogin(): void

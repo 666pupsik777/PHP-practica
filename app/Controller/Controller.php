@@ -2,44 +2,38 @@
 
 namespace Controller;
 
+use Src\View;
 use Illuminate\Validation\Factory;
 use Illuminate\Translation\Translator;
 use Illuminate\Translation\ArrayLoader;
-use View\View;
 
 abstract class Controller
 {
-    // Твои существующие методы (например, checkAccess) должны быть здесь...
+    /**
+     * Исправленный метод рендеринга с защитой XSS
+     */
+    protected function render(string $view, array $data = []): string
+    {
+        // Очистка данных от вредоносных скриптов (XSS защита)
+        array_walk_recursive($data, function (&$item) {
+            if (is_string($item)) {
+                $item = htmlspecialchars($item, ENT_QUOTES, 'UTF-8');
+            }
+        });
+
+        // Возвращаем объект View.
+        // Если твое ядро само вызывает метод render() при выводе строки,
+        // то оставляем так. Если нет — добавим ->render() в конце.
+        return new View($view, $data);
+    }
 
     /**
-     * Метод для валидации данных
+     * Базовый метод проверки прав (защищенный)
      */
-    protected function validate($data, $rules, $messages = [])
+    protected function checkAccess(array $roles): void
     {
-        // 1. Создаем загрузчик сообщений (опционально на русском)
-        $loader = new ArrayLoader();
-        $loader->addMessages('ru', 'validation', [
-            'required' => 'Поле :attribute обязательно для заполнения',
-            'date' => 'Поле :attribute должно быть корректной датой',
-            'min' => 'Поле :attribute должно быть не короче :min символов',
-            'string' => 'Поле :attribute должно быть строкой',
-        ]);
-
-        // 2. Настраиваем транслятор и фабрику валидации
-        $translator = new Translator($loader, 'ru');
-        $factory = new Factory($translator);
-
-        // 3. Создаем сам валидатор
-        $validator = $factory->make($data, $rules, $messages);
-
-        // 4. Если проверка провалена
-        if ($validator->fails()) {
-            // В учебных целях выводим ошибки и останавливаем работу
-            // В реальных проектах здесь делают редирект обратно с ошибками
-            dd($validator->errors()->all());
+        if (!\Src\Auth\Auth::check() || !in_array(\Src\Auth\Auth::user()->role_id, $roles)) {
+            app()->route->redirect('/hello?message=Недостаточно прав');
         }
-
-        // 5. Возвращаем только проверенные данные
-        return $validator->validated();
     }
 }

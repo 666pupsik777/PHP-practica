@@ -8,8 +8,7 @@
     <form method="post">
         <div class="form-group">
             <label>Логин</label>
-            <input type="text" name="login" required>
-        </div>
+            <input type="text" name="login" value="<?= $request['login'] ?? '' ?>">        </div>
         <div class="form-group">
             <label>Пароль</label>
             <input type="password" name="password" required>
